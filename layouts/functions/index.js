@@ -129,3 +129,32 @@ export function getFee(stats) {
     '%'
   );
 }
+
+// Return blockchain explorer URL
+export function getBlockchainUrl(id, stats, blockExplorers) {
+  if (stats && blockExplorers) {
+    return blockExplorers[stats.config.coin].blockchainExplorer
+      .replace('{symbol}', stats.config.symbol.toLowerCase())
+      .replace('{id}', id);
+  }
+}
+
+//chart blocks
+export function Chart(rawData, fixValueToCoins,stats) {
+  let graphData = {
+    labels: [],
+    datasets: {
+      data: [],
+    },
+  };
+  if (rawData) {
+    for (let i = 0, xy; (xy = rawData[i]); i++) {
+      graphData.labels.push(new Date(xy[0] * 1000).toLocaleString());
+      graphData.datasets.data.push(
+        fixValueToCoins ? getReadableCoin(stats, xy[1], null, true) : xy[1]
+      );
+    }
+  }
+
+  return graphData;
+}

@@ -1,11 +1,10 @@
 import MDBox from '../layouts/components/MDBox';
 import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
+import Link from '@mui/material/Link';
 import ComplexStatisticsCard from '../layouts/examples/Cards/StatisticsCards/ComplexStatisticsCard';
 import ReportsBarChart from '../layouts/examples/Charts/BarCharts/ReportsBarChart';
-import reportsBarChartData from '../layouts/layouts/dashboard/data/reportsBarChartData';
 import ReportsLineChart from '../layouts/examples/Charts/LineCharts/ReportsLineChart';
-import Projects from '../layouts/layouts/dashboard/components/Projects';
-import OrdersOverview from '../layouts/layouts/dashboard/components/OrdersOverview';
 import reportsLineChartData from '../layouts/layouts/dashboard/data/reportsLineChartData';
 import AddchartOutlinedIcon from '@mui/icons-material/AddchartOutlined';
 import ViewInArOutlinedIcon from '@mui/icons-material/ViewInArOutlined';
@@ -28,10 +27,40 @@ import {
   getReadableCoin,
   formatNumber,
   getFee,
+  getBlockchainUrl,
+  Chart
 } from 'functions';
-import Typography from '@mui/material/Typography';
-export default function Home({ pool, network, stats, lastblock, config }) {
+import MDTypography from '../layouts/components/MDTypography';
+import TimeAgo from 'react-timeago';
+import { Chip } from '@mui/material';
+import { useEffect, useState } from 'react';
+
+export default function Home({ poolStats, poolBlockExplorer }) {
+  const [stats, setStats] = useState(poolStats);
+  const [blockExplorer, setBlockExplorer] = useState(poolBlockExplorer);
   const { sales, tasks } = reportsLineChartData;
+  const { pathname } = useRouter();
+  ///fetch fresh data every 1 seconds
+  useEffect(() => {
+    async function fetchMyAPI() {
+      try {
+        const url =
+          pathname === '/'
+            ? `https://Uplexa.${process.env.NEXT_PUBLIC_HOST}/api/live_stats`
+            : `https://${pathname}.${process.env.NEXT_PUBLIC_HOST}/api/live_stats`;
+        const res = await fetch(url);
+        const data = await res.json();
+        setStats(data);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    const intervalId = setInterval(() => {
+      fetchMyAPI();
+    }, 3000); // in milliseconds
+    return () => clearInterval(intervalId);
+  }, []);
   return (
     <>
       <MDBox py={3}>
@@ -42,11 +71,11 @@ export default function Home({ pool, network, stats, lastblock, config }) {
                 color="dark"
                 icon={<AddchartOutlinedIcon />}
                 title="POOL HASHRATE"
-                count={`${getReadableHashRateString(pool.hashrate)} /sec`}
+                count={`${getReadableHashRateString(stats.pool.hashrate)} /sec`}
                 percentage={{
                   color: 'success',
                   amount: '+55%',
-                  label: 'than lask week',
+                  label: '',
                 }}
               />
             </MDBox>
@@ -56,11 +85,11 @@ export default function Home({ pool, network, stats, lastblock, config }) {
               <ComplexStatisticsCard
                 icon={<ViewInArOutlinedIcon />}
                 title="BLOCKS FOUND"
-                count={`${pool.totalBlocks}`}
+                count={`${stats.pool.totalBlocks}`}
                 percentage={{
                   color: 'success',
                   amount: '+3%',
-                  label: 'than last month',
+                  label: '',
                 }}
               />
             </MDBox>
@@ -71,11 +100,11 @@ export default function Home({ pool, network, stats, lastblock, config }) {
                 color="success"
                 icon={<AccessTimeOutlinedIcon />}
                 title="BLOCKS FOUND EVERY"
-                count={`${getReadableTime(network.difficulty / pool.hashrate)} `}
+                count={`${getReadableTime(stats.network.difficulty / stats.pool.hashrate)} `}
                 percentage={{
                   color: 'success',
                   amount: '+1%',
-                  label: 'than yesterday',
+                  label: '',
                 }}
               />
             </MDBox>
@@ -86,7 +115,9 @@ export default function Home({ pool, network, stats, lastblock, config }) {
                 color="primary"
                 icon={<TrendingUpOutlinedIcon />}
                 title="CURRENT EFFORT"
-                count={`${((pool.roundHashes / network.difficulty) * 100).toFixed(1)} %`}
+                count={`${((stats.pool.roundHashes / stats.network.difficulty) * 100).toFixed(
+                  1
+                )} %`}
                 percentage={{
                   color: 'success',
                   amount: '',
@@ -106,7 +137,7 @@ export default function Home({ pool, network, stats, lastblock, config }) {
                   icon={<SignalCellularAltOutlinedIcon />}
                   title="NETWORK HASHRATE"
                   count={`${getReadableHashRateString(
-                    network.difficulty / config.coinDifficultyTarget
+                    stats.network.difficulty / stats.config.coinDifficultyTarget
                   )} /sec`}
                   percentage={{
                     color: 'success',
@@ -121,7 +152,7 @@ export default function Home({ pool, network, stats, lastblock, config }) {
                 <ComplexStatisticsCard
                   icon={<LockOpenOutlinedIcon />}
                   title="DIFFICULTY (UPX)"
-                  count={`${formatNumber(network.difficulty.toString(), ' ')}`}
+                  count={`${formatNumber(stats.network.difficulty.toString(), ' ')}`}
                   percentage={{
                     color: 'success',
                     amount: '+3%',
@@ -136,7 +167,7 @@ export default function Home({ pool, network, stats, lastblock, config }) {
                   color="success"
                   icon={<LineWeightOutlinedIcon />}
                   title="BLOCKCHAIN HEIGHT"
-                  count={`${formatNumber(network.height.toString(), ' ')}`}
+                  count={`${formatNumber(stats.network.height.toString(), ' ')}`}
                   percentage={{
                     color: 'success',
                     amount: '+1%',
@@ -151,7 +182,7 @@ export default function Home({ pool, network, stats, lastblock, config }) {
                   color="primary"
                   icon={<AttachMoneyOutlinedIcon />}
                   title="LAST REWARD"
-                  count={`${getReadableCoin(stats, lastblock.reward)}`}
+                  count={`${getReadableCoin(stats, stats.lastblock.reward)}`}
                   percentage={{
                     color: 'success',
                     amount: '',
@@ -242,7 +273,33 @@ export default function Home({ pool, network, stats, lastblock, config }) {
             </Grid>
 
             <Grid item xs={12} md={6} lg={8}>
-              <Typography variant={'subtitle1'}>LAST HASH</Typography>
+              <Card>
+                <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+                  <MDBox>
+                    <MDTypography variant="h6" fontWeight={'9.9px'} gutterBottom>
+                      LAST HASH
+                    </MDTypography>
+                    <Link
+                      href={getBlockchainUrl(stats.lastblock.hash, stats, blockExplorer)}
+                      variant="body2"
+                      color={'info'}
+                    >
+                      {stats.lastblock.hash}
+                    </Link>
+                    <MDTypography variant="h6" fontWeight={'9.9px'} gutterBottom>
+                      <Chip
+                        variant="outlined"
+                        color={'error'}
+                        label={
+                          <TimeAgo
+                            date={`${new Date(stats.lastblock.timestamp * 1000).toISOString()}`}
+                          />
+                        }
+                      />
+                    </MDTypography>
+                  </MDBox>
+                </MDBox>
+              </Card>
             </Grid>
           </Grid>
         </MDBox>
@@ -255,23 +312,19 @@ export default function Home({ pool, network, stats, lastblock, config }) {
                   color="info"
                   title="Hashrate"
                   description=""
-                  date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
+                  date=""
+                  chart={Chart(stats.charts.hashrate)}
                 />
               </MDBox>
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={3}>
-                <ReportsLineChart
+                <ReportsBarChart
                   color="success"
                   title="Difficulty"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={sales}
+                  description=""
+                  date=""
+                  chart={Chart(stats.charts.difficulty)}
                 />
               </MDBox>
             </Grid>
@@ -285,8 +338,8 @@ export default function Home({ pool, network, stats, lastblock, config }) {
                 <ReportsLineChart
                   color="dark"
                   title="Miners"
-                  description="Last Campaign Performance"
-                  date="just updated"
+                  description=""
+                  date=""
                   chart={tasks}
                 />
               </MDBox>
@@ -296,23 +349,12 @@ export default function Home({ pool, network, stats, lastblock, config }) {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="dark"
-                  title="Miners"
-                  description="Last Campaign Performance"
-                  date="just updated"
+                  title="Workers"
+                  description=""
+                  date=""
                   chart={tasks}
                 />
               </MDBox>
-            </Grid>
-          </Grid>
-        </MDBox>
-
-        <MDBox>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
-              <Projects />
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <OrdersOverview />
             </Grid>
           </Grid>
         </MDBox>
@@ -327,18 +369,21 @@ export async function getServerSideProps({ resolvedUrl }) {
     pathname === '/'
       ? `https://Uplexa.${process.env.NEXT_PUBLIC_HOST}/api/stats`
       : `https://${pathname}.${process.env.NEXT_PUBLIC_HOST}/api/stats`;
+  const url2 =
+    pathname === '/'
+      ? `https://Uplexa.${process.env.NEXT_PUBLIC_HOST}/api/block_explorers`
+      : `https://${pathname}.${process.env.NEXT_PUBLIC_HOST}/api//block_explorers`;
   // Fetch data from external API
   const res = await fetch(url);
   const data = await res.json();
+  const result = await fetch(url2);
+  const blockExplorer = await result.json();
 
   // Pass data to the page via props
   return {
     props: {
-      pool: data.pool,
-      network: data.network,
-      stats: data,
-      lastblock: data.lastblock,
-      config: data.config,
+      poolStats: data,
+      poolBlockExplorer: blockExplorer,
     },
   };
 }

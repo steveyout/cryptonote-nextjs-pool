@@ -22,6 +22,7 @@
     "react-chartjs-2": "^5.0.1",
     "react-dom": "18.2.0",
     "react-table": "^7.8.0",
+    "react-timeago": "^7.1.0",
     "stylis-plugin-rtl": "^2.1.1",
     "use-sound": "^4.0.1"
   },

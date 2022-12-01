@@ -47,6 +47,7 @@ import {
   setSidenavColor,
   setDarkMode,
 } from 'context';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
 function Configurator() {
   const [controller, dispatch] = useMaterialUIController();
@@ -138,13 +139,13 @@ function Configurator() {
         px={3}
       >
         <MDBox>
-          <MDTypography variant="h5">Material UI Configurator</MDTypography>
+          <MDTypography variant="h5">Theme</MDTypography>
           <MDTypography variant="body2" color="text">
             See our dashboard options.
           </MDTypography>
         </MDBox>
 
-        <Icon
+        <CloseOutlinedIcon
           sx={({ typography: { size }, palette: { dark, white } }) => ({
             fontSize: `${size.lg} !important`,
             color: darkMode ? white.main : dark.main,
@@ -154,9 +155,7 @@ function Configurator() {
             transform: 'translateY(5px)',
           })}
           onClick={handleCloseConfigurator}
-        >
-          close
-        </Icon>
+        />
       </MDBox>
 
       <Divider />
@@ -295,19 +294,8 @@ function Configurator() {
             variant="outlined"
             fullWidth
           >
-            view documentation
+            Telegram
           </MDButton>
-        </MDBox>
-        <MDBox display="flex" justifyContent="center">
-          <GitHubButton
-            href="https://github.com/creativetimofficial/material-dashboard-react"
-            data-icon="octicon-star"
-            data-size="large"
-            data-show-count="true"
-            aria-label="Star creativetimofficial/material-dashboard-react on GitHub"
-          >
-            Star
-          </GitHubButton>
         </MDBox>
         <MDBox mt={2} textAlign="center">
           <MDBox mb={0.5}>
@@ -329,7 +317,7 @@ function Configurator() {
             </MDBox>
             <MDButton
               component={Link}
-              href="https://www.facebook.com/sharer/sharer.php?u=https://www.creative-tim.com/product/material-dashboard-react"
+              href={`https://www.facebook.com/sharer/sharer.php?u=https://${process.env.NEXT_PUBLIC_HOST}`}
               target="_blank"
               rel="noreferrer"
               color="dark"

@@ -52,19 +52,11 @@ import Dashboard from 'layouts/dashboard';
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 import Footer from './examples/Footer';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 
 export default function App({ children }) {
   const [controller, dispatch] = useMaterialUIController();
-  const {
-    miniSidenav,
-    direction,
-    layout,
-    openConfigurator,
-    sidenavColor,
-    transparentSidenav,
-    whiteSidenav,
-    darkMode,
-  } = controller;
+  const { miniSidenav, direction, layout, openConfigurator, sidenavColor, darkMode } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useRouter();
@@ -127,9 +119,7 @@ export default function App({ children }) {
       sx={{ cursor: 'pointer' }}
       onClick={handleConfiguratorOpen}
     >
-      <Icon fontSize="small" color="inherit">
-        settings
-      </Icon>
+      <SettingsOutlinedIcon fontSize="small" color="inherit" />
     </MDBox>
   );
 

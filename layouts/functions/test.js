@@ -322,6 +322,8 @@ function getPoolHost() {
   else return window.location.hostname;
 }
 
+
+
 // Return transaction URL
 function getTransactionUrl(id, stats) {
   if (stats && blockExplorers) {

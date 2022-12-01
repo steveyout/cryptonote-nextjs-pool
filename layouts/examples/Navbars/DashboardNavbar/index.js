@@ -60,6 +60,8 @@ import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import MenuOpenOutlinedIcon from '@mui/icons-material/MenuOpenOutlined';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
+import VolunteerActivismOutlinedIcon from '@mui/icons-material/VolunteerActivismOutlined';
+import Badge from '@mui/material/Badge';
 
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
@@ -112,9 +114,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
       onClose={handleCloseMenu}
       sx={{ mt: 2 }}
     >
-      <NotificationItem icon={<Icon>email</Icon>} title="Check new messages" />
-      <NotificationItem icon={<Icon>podcasts</Icon>} title="Manage Podcast sessions" />
-      <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" />
+      <NotificationItem icon={<VolunteerActivismOutlinedIcon />} title="Please support our pool" />
     </Menu>
   );
 
@@ -187,7 +187,9 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 variant="contained"
                 onClick={handleOpenMenu}
               >
-                <NotificationsNoneOutlinedIcon />
+                <Badge color="error" badgeContent="1">
+                  <NotificationsNoneOutlinedIcon />
+                </Badge>
               </IconButton>
               {renderMenu()}
             </MDBox>
