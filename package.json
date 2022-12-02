@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "pm2 start next start --name 'next-pool'",
     "lint": "next lint"
   },
   "dependencies": {
