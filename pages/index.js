@@ -3,7 +3,6 @@ import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import Link from '@mui/material/Link';
 import ComplexStatisticsCard from '../layouts/examples/Cards/StatisticsCards/ComplexStatisticsCard';
-import ReportsBarChart from '../layouts/examples/Charts/BarCharts/ReportsBarChart';
 import ReportsLineChart from '../layouts/examples/Charts/LineCharts/ReportsLineChart';
 import reportsLineChartData from '../layouts/layouts/dashboard/data/reportsLineChartData';
 import AddchartOutlinedIcon from '@mui/icons-material/AddchartOutlined';
@@ -28,7 +27,7 @@ import {
   formatNumber,
   getFee,
   getBlockchainUrl,
-  Chart
+  Chart,
 } from 'functions';
 import MDTypography from '../layouts/components/MDTypography';
 import TimeAgo from 'react-timeago';
@@ -44,10 +43,7 @@ export default function Home({ poolStats, poolBlockExplorer }) {
   useEffect(() => {
     async function fetchMyAPI() {
       try {
-        const url =
-          pathname === '/'
-            ? `https://Uplexa.${process.env.NEXT_PUBLIC_HOST}/api/live_stats`
-            : `https://${pathname}.${process.env.NEXT_PUBLIC_HOST}/api/live_stats`;
+        const url = `https://${process.env.NEXT_PUBLIC_API}/api/live_stats`;
         const res = await fetch(url);
         const data = await res.json();
         setStats(data);
@@ -308,8 +304,8 @@ export default function Home({ poolStats, poolBlockExplorer }) {
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={3}>
-                <ReportsBarChart
-                  color="info"
+                <ReportsLineChart
+                  color="inherit"
                   title="Hashrate"
                   description=""
                   date=""
@@ -319,8 +315,8 @@ export default function Home({ poolStats, poolBlockExplorer }) {
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={3}>
-                <ReportsBarChart
-                  color="success"
+                <ReportsLineChart
+                  color="inherit"
                   title="Difficulty"
                   description=""
                   date=""
@@ -336,11 +332,11 @@ export default function Home({ poolStats, poolBlockExplorer }) {
             <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={3}>
                 <ReportsLineChart
-                  color="dark"
+                  color="inherit"
                   title="Miners"
                   description=""
                   date=""
-                  chart={tasks}
+                  chart={Chart(stats.charts.miners)}
                 />
               </MDBox>
             </Grid>
@@ -348,11 +344,11 @@ export default function Home({ poolStats, poolBlockExplorer }) {
             <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={3}>
                 <ReportsLineChart
-                  color="dark"
+                  color="inherit"
                   title="Workers"
                   description=""
                   date=""
-                  chart={tasks}
+                  chart={Chart(stats.charts.workers)}
                 />
               </MDBox>
             </Grid>
@@ -363,16 +359,10 @@ export default function Home({ poolStats, poolBlockExplorer }) {
   );
 }
 
-export async function getServerSideProps({ resolvedUrl }) {
-  const pathname = resolvedUrl;
-  const url =
-    pathname === '/'
-      ? `https://Uplexa.${process.env.NEXT_PUBLIC_HOST}/api/stats`
-      : `https://${pathname}.${process.env.NEXT_PUBLIC_HOST}/api/stats`;
-  const url2 =
-    pathname === '/'
-      ? `https://Uplexa.${process.env.NEXT_PUBLIC_HOST}/api/block_explorers`
-      : `https://${pathname}.${process.env.NEXT_PUBLIC_HOST}/api//block_explorers`;
+export async function getServerSideProps() {
+  const url = `https://${process.env.NEXT_PUBLIC_API}/api/stats`;
+  const url2 = `https://${process.env.NEXT_PUBLIC_API}/api/block_explorers`;
+
   // Fetch data from external API
   const res = await fetch(url);
   const data = await res.json();

@@ -51,8 +51,8 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
-  const location = useRouter();
-  const collapseName = location.pathname.replace('/', '');
+  const { pathname } = useRouter();
+  const collapseName = pathname;
 
   let textColor = 'white';
 
@@ -82,7 +82,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
     // Remove event listener on cleanup
     return () => window.removeEventListener('resize', handleMiniSidenav);
-  }, [dispatch, location]);
+  }, [dispatch, pathname]);
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
   const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route }) => {
@@ -90,13 +90,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
     if (type === 'collapse') {
       returnValue = href ? (
-        <Link
-          href={href}
-          key={key}
-          target="_blank"
-          rel="noreferrer"
-          sx={{ textDecoration: 'none' }}
-        >
+        <Link href={href} key={key} sx={{ textDecoration: 'none' }}>
           <SidenavCollapse
             name={name}
             icon={icon}
@@ -183,7 +177,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       <MDBox p={2} mt="auto">
         <MDButton
           component="a"
-          href=""
+          href="https://bigminers.site"
           target="_blank"
           rel="noreferrer"
           variant="gradient"

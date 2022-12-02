@@ -131,12 +131,8 @@ export default function App({ children }) {
           <>
             <Sidenav
               color={sidenavColor}
-              brand={pathname === '/' ? `uplexa.png` : `${pathname}.png`}
-              brandName={
-                pathname === '/'
-                  ? `Uplexa.${process.env.NEXT_PUBLIC_HOST}`
-                  : `${pathname}.${process.env.NEXT_PUBLIC_HOST}`
-              }
+              brand={process.env.NEXT_PUBLIC_ICON}
+              brandName={process.env.NEXT_PUBLIC_API}
               routes={routes}
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
@@ -160,12 +156,8 @@ export default function App({ children }) {
         <>
           <Sidenav
             color={sidenavColor}
-            brand={pathname === '/' ? `uplexa.png` : `${pathname}.png`}
-            brandName={
-              pathname === '/'
-                ? `Uplexa.${process.env.NEXT_PUBLIC_HOST}`
-                : `${pathname}.${process.env.NEXT_PUBLIC_HOST}`
-            }
+            brand={process.env.NEXT_PUBLIC_ICON}
+            brandName={process.env.NEXT_PUBLIC_API}
             routes={routes}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}

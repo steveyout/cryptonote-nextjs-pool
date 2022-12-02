@@ -1,3 +1,6 @@
+import colors from "../../../../../assets/theme/base/colors";
+import gradientChartLine from "../../../../../assets/theme/functions/gradientChartLine";
+
 /**
 =========================================================
 * Material Dashboard 2 React - v2.1.0
@@ -20,16 +23,12 @@ function configs(labels, datasets) {
       datasets: [
         {
           label: datasets.label,
-          tension: 0,
-          pointRadius: 5,
-          pointBorderColor: 'transparent',
-          pointBackgroundColor: 'rgba(255, 255, 255, .8)',
-          borderColor: 'rgba(255, 255, 255, .8)',
-          borderWidth: 4,
-          backgroundColor: 'transparent',
-          fill: true,
+          tension: 0.4,
+          pointRadius: 0,
+          borderWidth: 1,
           data: datasets.data,
-          maxBarThickness: 6,
+          maxBarThickness: 1,
+          fill: true,
         },
       ],
     },
@@ -49,14 +48,14 @@ function configs(labels, datasets) {
         y: {
           grid: {
             drawBorder: false,
-            display: true,
+            display: false,
             drawOnChartArea: true,
             drawTicks: false,
             borderDash: [5, 5],
             color: 'rgba(255, 255, 255, .2)',
           },
           ticks: {
-            display: true,
+            display: false,
             color: '#f8f9fa',
             padding: 10,
             font: {
@@ -77,7 +76,7 @@ function configs(labels, datasets) {
             borderDash: [5, 5],
           },
           ticks: {
-            display: true,
+            display: false,
             color: '#f8f9fa',
             padding: 10,
             font: {
