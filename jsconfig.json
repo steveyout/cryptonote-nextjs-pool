@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "baseUrl": "layouts",
+    "paths": {
+      "*": ["public/src/*"]
+    }
+  }
+}

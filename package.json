@@ -1,0 +1,43 @@
+{
+  "name": "pool",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/icons-material": "^5.10.15",
+    "@mui/x-data-grid": "^5.17.14",
+    "apexcharts": "^3.36.3",
+    "assets": "^3.0.1",
+    "chart.js": "^4.0.1",
+    "chroma-js": "^2.4.2",
+    "eslint": "8.28.0",
+    "eslint-config-next": "13.0.4",
+    "next": "13.0.4",
+    "react": "18.2.0",
+    "react-apexcharts": "^1.4.0",
+    "react-chartjs-2": "^5.0.1",
+    "react-dom": "18.2.0",
+    "react-table": "^7.8.0",
+    "react-timeago": "^7.1.0",
+    "stylis-plugin-rtl": "^2.1.1",
+    "use-sound": "^4.0.1"
+  },
+  "devDependencies": {
+    "@emotion/cache": "^11.10.5",
+    "@mui/material": "^5.10.15",
+    "@typescript-eslint/eslint-plugin": "^5.42.1",
+    "eslint-config-prettier": "^8.4.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "notistack": "^2.0.8",
+    "prettier": "2.5.1",
+    "prop-types": "^15.8.1",
+    "react-github-btn": "^1.4.0"
+  }
+}
