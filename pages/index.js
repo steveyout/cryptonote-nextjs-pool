@@ -70,8 +70,8 @@ export default function Home({ poolStats, poolBlockExplorer }) {
                 count={`${getReadableHashRateString(stats.pool.hashrate)} /sec`}
                 percentage={{
                   color: 'success',
-                  amount: '+55%',
-                  label: '',
+                  amount: '',
+                  label: 'just updated',
                 }}
               />
             </MDBox>
@@ -84,8 +84,8 @@ export default function Home({ poolStats, poolBlockExplorer }) {
                 count={`${stats.pool.totalBlocks}`}
                 percentage={{
                   color: 'success',
-                  amount: '+3%',
-                  label: '',
+                  amount: '',
+                  label: 'just updated',
                 }}
               />
             </MDBox>
@@ -99,8 +99,8 @@ export default function Home({ poolStats, poolBlockExplorer }) {
                 count={`${getReadableTime(stats.network.difficulty / stats.pool.hashrate)} `}
                 percentage={{
                   color: 'success',
-                  amount: '+1%',
-                  label: '',
+                  amount: '',
+                  label: 'just updated',
                 }}
               />
             </MDBox>
@@ -137,8 +137,8 @@ export default function Home({ poolStats, poolBlockExplorer }) {
                   )} /sec`}
                   percentage={{
                     color: 'success',
-                    amount: '+55%',
-                    label: 'than lask week',
+                    amount: '',
+                    label: 'just updated',
                   }}
                 />
               </MDBox>
@@ -151,8 +151,8 @@ export default function Home({ poolStats, poolBlockExplorer }) {
                   count={`${formatNumber(stats.network.difficulty.toString(), ' ')}`}
                   percentage={{
                     color: 'success',
-                    amount: '+3%',
-                    label: 'than last month',
+                    amount: '',
+                    label: 'just updated',
                   }}
                 />
               </MDBox>
@@ -166,8 +166,8 @@ export default function Home({ poolStats, poolBlockExplorer }) {
                   count={`${formatNumber(stats.network.height.toString(), ' ')}`}
                   percentage={{
                     color: 'success',
-                    amount: '+1%',
-                    label: 'than yesterday',
+                    amount: '',
+                    label: 'just updated',
                   }}
                 />
               </MDBox>
@@ -201,8 +201,8 @@ export default function Home({ poolStats, poolBlockExplorer }) {
                   count={`${stats.pool.miners}/${stats.pool.minersSolo}`}
                   percentage={{
                     color: 'success',
-                    amount: '+55%',
-                    label: 'than lask week',
+                    amount: '',
+                    label: 'just updated',
                   }}
                 />
               </MDBox>
@@ -215,8 +215,8 @@ export default function Home({ poolStats, poolBlockExplorer }) {
                   count={`${getFee(stats)}`}
                   percentage={{
                     color: 'success',
-                    amount: '+3%',
-                    label: 'than last month',
+                    amount: '',
+                    label: 'just updated',
                   }}
                 />
               </MDBox>
@@ -230,8 +230,8 @@ export default function Home({ poolStats, poolBlockExplorer }) {
                   count={`${stats.config.finderReward} %`}
                   percentage={{
                     color: 'success',
-                    amount: '+1%',
-                    label: 'than yesterday',
+                    amount: '',
+                    label: 'just updated',
                   }}
                 />
               </MDBox>
@@ -271,7 +271,7 @@ export default function Home({ poolStats, poolBlockExplorer }) {
             <Grid item xs={12} md={6} lg={8}>
               <Card>
                 <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-                  <MDBox>
+                  <MDBox sx={{ overflow: 'hidden' }}>
                     <MDTypography variant="h6" fontWeight={'9.9px'} gutterBottom>
                       LAST HASH
                     </MDTypography>

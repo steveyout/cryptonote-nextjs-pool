@@ -26,6 +26,7 @@ import MDTypography from 'components/MDTypography';
 
 // Material Dashboard 2 React base styles
 import typography from 'assets/theme/base/typography';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 function Footer({ company, links }) {
   const { href, name } = company;
@@ -62,17 +63,15 @@ function Footer({ company, links }) {
       >
         &copy; {new Date().getFullYear()}, made with
         <MDBox fontSize={size.md} color="text" mb={-0.5} mx={0.25}>
-          <Icon color="inherit" fontSize="inherit">
-            favorite
-          </Icon>
+          <FavoriteIcon color={'error'} />
         </MDBox>
         by
-        <Link href={href} target="_blank">
+        <Link href={'https://github.com/steveyout'} target="_blank">
           <MDTypography variant="button" fontWeight="medium">
-            &nbsp;{name}&nbsp;
+            &nbsp;Steveyout&nbsp;
           </MDTypography>
         </Link>
-        for a better web.
+        for a better pool ui.
       </MDBox>
       <MDBox
         component="ul"
@@ -99,12 +98,11 @@ function Footer({ company, links }) {
 
 // Setting default values for the props of Footer
 Footer.defaultProps = {
-  company: { href: 'https://www.creative-tim.com/', name: 'Creative Tim' },
+  company: { href: 'https://bigminers.site', name: 'Pools' },
   links: [
-    { href: 'https://www.creative-tim.com/', name: 'Creative Tim' },
-    { href: 'https://www.creative-tim.com/presentation', name: 'About Us' },
-    { href: 'https://www.creative-tim.com/blog', name: 'Blog' },
-    { href: 'https://www.creative-tim.com/license', name: 'License' },
+    { href: 'https://github.com/steveyout/cryptonote-nextjs-pool', name: 'Github' },
+    { href: process.env.NEXT_PUBLIC_DISCORD, name: 'Discord' },
+    { href: process.env.NEXT_PUBLIC_TELEGRAM, name: 'Telegram' },
   ],
 };
 
