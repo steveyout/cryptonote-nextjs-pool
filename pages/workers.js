@@ -2,18 +2,20 @@ import MDBox from '../layouts/components/MDBox';
 import Grid from '@mui/material/Grid';
 import Input from 'components/MDInput';
 import Typography from 'components/MDTypography';
-import { CardContent, Chip, InputAdornment, Paper, Skeleton, Tooltip } from "@mui/material";
+import { CardContent, Chip, InputAdornment, Paper, Skeleton, Tooltip } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import { DataGrid } from '@mui/x-data-grid';
 import Alert from '@mui/material/Alert';
 import { useEffect, useState } from 'react';
-import MDTypography from "components/MDTypography";
-import Card from "@mui/material/Card";
-import IconButton from "@mui/material/IconButton";
+import MDTypography from 'components/MDTypography';
+import Card from '@mui/material/Card';
+import IconButton from '@mui/material/IconButton';
 import SpeedIcon from '@mui/icons-material/Speed';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 //functions
 import {
   getReadableHashRateString,
@@ -24,7 +26,7 @@ import {
   getBlockchainUrl,
   Chart,
 } from 'functions';
-import TimeAgo from "react-timeago";
+import TimeAgo from 'react-timeago';
 
 export default function Workers() {
   const [stats, setStats] = useState([]);
@@ -45,17 +47,17 @@ export default function Workers() {
   }, []);
 
   ////on search
-  const[buttonLoading,setButtonLoading]=useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
   const [search, setSearch] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const[rows,setRows]=useState([]);
-  const[rows2,setRows2]=useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [rows, setRows] = useState([]);
+  const [rows2, setRows2] = useState([]);
   function handleChange(event) {
-    setSearchTerm(event.target.value)
+    setSearchTerm(event.target.value);
   }
 
   const searchData = async (event) => {
-    setButtonLoading(true)
+    setButtonLoading(true);
     if (!event) {
       return;
     }
@@ -63,11 +65,11 @@ export default function Workers() {
       const url = `https://${process.env.NEXT_PUBLIC_API}/api/stats_address?address=${searchTerm}&longpoll=false`;
       const res = await fetch(url);
       const data = await res.json();
-      setSearch(data)
-      setButtonLoading(false)
-      setRows2(data.workers)
+      setSearch(data);
+      setButtonLoading(false);
+      setRows2(data.workers);
     } catch (error) {
-      setButtonLoading(false)
+      setButtonLoading(false);
       console.error(error);
     }
   };
@@ -80,17 +82,79 @@ export default function Workers() {
   ];
 
   const columns2 = [
-    { field: 'Status', headerName: 'Status', flex: 1 },
+    {
+      field: 'hashrate2',
+      headerName: 'Status',
+      flex: 1,
+      valueGetter: (params) => `${params.row.hashrate || ''}`,
+      renderCell: (params) => {
+        return (
+          <Chip
+            icon={params.value <= 0 ? <CancelIcon /> : <CheckCircleIcon />}
+            label={params.value <= 0 ? 'Offline' : 'Online'}
+            color={params.value <= 0 ? 'error' : 'success'}
+          />
+        );
+      },
+    },
     { field: 'name', headerName: 'Worker Name', flex: 1 },
-    { field: 'hashrate', headerName: 'Hash Rate', flex: 1 },
-    { field: 'hashrate_1h', headerName: 'HR (1h)', flex: 1 },
-    { field: 'hashrate_6h', headerName: 'HR (6h)', flex: 1 },
-    { field: 'hashrate_24h', headerName: 'HR (24h)', flex: 1 },
-    { field: 'Last Share Submitted', headerName: 'Last Share Submitted', flex: 1 },
-    { field: 'Total Hashes Submitted', headerName: 'Total Hashes Submitted',flex: 1 },
+    {
+      field: 'hashrate',
+      headerName: 'Hash Rate',
+      flex: 1,
+      valueFormatter: (params) => {
+        if (params.value == null) {
+          return '';
+        }
+        return `${getReadableHashRateString(params.value)} /sec`;
+      },
+    },
+    {
+      field: 'hashrate_1h',
+      headerName: 'HR (1h)',
+      flex: 1,
+      valueFormatter: (params) => {
+        if (params.value == null) {
+          return '';
+        }
+        return `${getReadableHashRateString(params.value)} /sec`;
+      },
+    },
+    {
+      field: 'hashrate_6h',
+      headerName: 'HR (6h)',
+      flex: 1,
+      valueFormatter: (params) => {
+        if (params.value == null) {
+          return '';
+        }
+        return `${getReadableHashRateString(params.value)} /sec`;
+      },
+    },
+    {
+      field: 'hashrate_24h',
+      headerName: 'HR (24h)',
+      flex: 1,
+      valueFormatter: (params) => {
+        if (params.value == null) {
+          return '';
+        }
+        return `${getReadableHashRateString(params.value)} /sec`;
+      },
+    },
+    {
+      field: 'lastShare',
+      headerName: 'Last Share Submitted',
+      flex: 1,
+      renderCell: (params) => {
+        if (params.value == null) {
+          return '';
+        }
+        return <TimeAgo date={`${new Date(params.value * 1000).toISOString()}`} />;
+      },
+    },
+    { field: 'hashes', headerName: 'Total Hashes Submitted', flex: 1 },
   ];
-
-
 
   return (
     <>
@@ -124,7 +188,8 @@ export default function Workers() {
                             variant={'contained'}
                             loading={buttonLoading}
                             startIcon={<SearchOutlinedIcon />}
-                            onClick={(e) => searchData(e)}>
+                            onClick={(e) => searchData(e)}
+                          >
                             Search
                           </LoadingButton>
                         </Tooltip>
@@ -134,84 +199,116 @@ export default function Workers() {
                 />
               </MDBox>
 
-              {search && search.stats?(
+              {search && search.stats ? (
                 <MDBox mb={1.5}>
-                  <MDTypography sx={{mb:2}}> Hashrate</MDTypography>
-                  <Card sx={{ minWidth: 275,mb:4 }}>
+                  <MDTypography sx={{ mb: 2 }}> Hashrate</MDTypography>
+                  <Card sx={{ minWidth: 275, mb: 4 }}>
                     <CardContent>
                       <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        <IconButton><SpeedIcon/> </IconButton>
-                          Current Hash Rate:({getReadableHashRateString(search.stats.hashrate)}/sec)
+                        <IconButton>
+                          <SpeedIcon />{' '}
+                        </IconButton>
+                        Current Hash Rate:({getReadableHashRateString(search.stats.hashrate)}/sec)
                       </Typography>
 
                       <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        <IconButton><SpeedIcon/> </IconButton>
-                        Average 1/6/24-hour Hash Rate:
-                        ({getReadableHashRateString(search.stats.hashrate_1h)}/sec)
-                        ({getReadableHashRateString(search.stats.hashrate_6h)}/sec)
-                        ({getReadableHashRateString(search.stats.hashrate_24h)}/sec)
+                        <IconButton>
+                          <SpeedIcon />{' '}
+                        </IconButton>
+                        Average 1/6/24-hour Hash Rate: (
+                        {getReadableHashRateString(search.stats.hashrate_1h)}/sec) (
+                        {getReadableHashRateString(search.stats.hashrate_6h)}/sec) (
+                        {getReadableHashRateString(search.stats.hashrate_24h)}/sec)
                       </Typography>
 
                       <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        <IconButton><AccessTimeIcon/> </IconButton>
+                        <IconButton>
+                          <AccessTimeIcon />{' '}
+                        </IconButton>
                         Last Share Submitted:
-                        <TimeAgo
-                        date={`${new Date(search.stats.lastShare * 1000).toISOString()}`}
-                      />
-                      </Typography>
-
-                      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        <IconButton><CloudUploadIcon/> </IconButton>
-                        Total Hashes Submitted: {search.stats.roundHashes}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-
-                  <MDTypography sx={{mb:2}}> Payments</MDTypography>
-                  <Card sx={{ minWidth: 275,mb:4 }}>
-                    <CardContent>
-                      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        <IconButton><SpeedIcon/> </IconButton>
-                        Pending Balance:({getReadableHashRateString(search.stats.hashrate)}/sec)
-                      </Typography>
-
-                      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        <IconButton><SpeedIcon/> </IconButton>
-                        Total Paid:
-                        ({getReadableHashRateString(search.stats.hashrate_1h)}/sec)
-                        ({getReadableHashRateString(search.stats.hashrate_6h)}/sec)
-                        ({getReadableHashRateString(search.stats.hashrate_24h)}/sec)
-                      </Typography>
-
-                      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        <IconButton><AccessTimeIcon/> </IconButton>
-                        Last 24h Paid:
                         <TimeAgo
                           date={`${new Date(search.stats.lastShare * 1000).toISOString()}`}
                         />
                       </Typography>
 
                       <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        <IconButton><CloudUploadIcon/> </IconButton>
-                        Last 7d Paid: {search.stats.roundHashes}
-                      </Typography>
-
-                      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        <IconButton><CloudUploadIcon/> </IconButton>
-                        Round contribution: {search.stats.roundHashes}
-                      </Typography>
-
-                      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        <IconButton><CloudUploadIcon/> </IconButton>
-                        Current Payout Estimate: {search.stats.roundHashes}
+                        <IconButton>
+                          <CloudUploadIcon />{' '}
+                        </IconButton>
+                        Total Hashes Submitted: {search.stats.roundHashes}
                       </Typography>
                     </CardContent>
                   </Card>
 
+                  <MDTypography sx={{ mb: 2 }}> Payments</MDTypography>
+                  <Card sx={{ minWidth: 275, mb: 4 }}>
+                    <CardContent>
+                      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        <IconButton>
+                          <SpeedIcon />{' '}
+                        </IconButton>
+                        Pending Balance:({getReadableCoin(stats)})
+                      </Typography>
 
-                  <MDTypography sx={{mb:2}}> Worker Statistics</MDTypography>
-                  <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        <IconButton>
+                          <SpeedIcon />{' '}
+                        </IconButton>
+                        Total Paid: ({getReadableCoin(stats)})
+                      </Typography>
+
+                      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        <IconButton>
+                          <AccessTimeIcon />{' '}
+                        </IconButton>
+                        Last 24h Paid: ({getReadableCoin(stats)})
+                      </Typography>
+
+                      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        <IconButton>
+                          <CloudUploadIcon />{' '}
+                        </IconButton>
+                        Last 7d Paid: ({getReadableCoin(stats)})
+                      </Typography>
+
+                      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        <IconButton>
+                          <CloudUploadIcon />{' '}
+                        </IconButton>
+                        Round contribution:{' '}
+                        {Math.round(
+                          ((search.stats.roundHashes * 100) / stats.pool.roundHashes) * 1000
+                        ) / 1000}{' '}
+                        % (shares),
+                        {Math.round(
+                          ((search.stats.roundScore * 100) / stats.pool.roundScore) * 1000
+                        ) / 1000}{' '}
+                        % (score)
+                      </Typography>
+
+                      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        <IconButton>
+                          <CloudUploadIcon />{' '}
+                        </IconButton>
+                        Current Payout Estimate:{' '}
+                        {getReadableCoin(
+                          stats,
+                          Math.round(
+                            parseFloat(stats.lastblock.reward || 0) *
+                              (parseFloat(
+                                (search.stats.roundHashes * 100) / stats.pool.roundHashes
+                              ) /
+                                100)
+                          )
+                        )}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+
+                  <MDTypography sx={{ mb: 2 }}> Worker Statistics</MDTypography>
+                  <Paper sx={{ width: '100%', overflow: 'hidden', height: '400px' }}>
                     <DataGrid
+                      getRowId={(row) => row.name}
                       rows={rows2}
                       columns={columns2}
                       initialState={{
@@ -224,14 +321,15 @@ export default function Workers() {
                     />
                   </Paper>
 
-
-                  <MDTypography sx={{mb:2,mt:2}}> Payments History</MDTypography>
+                  <MDTypography sx={{ mb: 2, mt: 2 }}> Payments History</MDTypography>
                 </MDBox>
-              ):search.error==='Not found'?(
+              ) : search.error === 'Not found' ? (
                 <Alert variant="filled" severity="error">
-                Not found
-              </Alert>):
-                ('')}
+                  Not found
+                </Alert>
+              ) : (
+                ''
+              )}
             </Grid>
           )}
         </Grid>
