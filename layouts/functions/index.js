@@ -140,7 +140,7 @@ export function getBlockchainUrl(id, stats, blockExplorers) {
 }
 
 //chart blocks
-export function Chart(rawData, fixValueToCoins,stats) {
+export function Chart(rawData, fixValueToCoins, stats) {
   let graphData = {
     labels: [],
     datasets: {
@@ -157,4 +157,37 @@ export function Chart(rawData, fixValueToCoins,stats) {
   }
 
   return graphData;
+}
+
+// Format luck / current effort
+export function formatLuck(lastStats, difficulty, shares, solo = false) {
+  // Only an approximation to reverse the calculations done in pool.js, because the shares with their respective times are not recorded in redis
+  // Approximation assumes equal pool hashrate for the whole round
+  let accurateShares;
+  // Could potentially be replaced by storing the sum of all job.difficulty in the redis db.
+  if (lastStats.config.slushMiningEnabled) {
+    // Uses integral calculus to calculate the average of a dynamic function
+    accurateShares =
+      (1 / lastStats.config.blockTime) * // 1/blockTime to get the average
+      (shares *
+        lastStats.config.weight * // Basically calculates the 'area below the graph' between 0 and blockTime
+        (1 -
+          Math.pow(
+            Math.E,
+            -lastStats.config.blockTime / lastStats.config.weight // blockTime is equal to the highest possible result of (dateNowSeconds - scoreTime)
+          )));
+  } else {
+    accurateShares = shares;
+  }
+
+  var percent = Math.round((accurateShares / difficulty) * 100);
+  if (!percent) {
+    return `?` + (solo === true ? `solo` : ``);
+  } else if (percent <= 100) {
+    return `${percent}%` + (solo === true ? `solo` : ``);
+  } else if (percent >= 101 && percent <= 150) {
+    return `${percent}%` + (solo === true ? `solo` : ``);
+  } else {
+    return `${percent}%` + (solo === true ? `solo` : ``);
+  }
 }

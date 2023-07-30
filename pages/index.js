@@ -147,7 +147,7 @@ export default function Home({ poolStats, poolBlockExplorer }) {
               <MDBox mb={1.5}>
                 <ComplexStatisticsCard
                   icon={<LockOpenOutlinedIcon />}
-                  title="DIFFICULTY (UPX)"
+                  title={`DIFFICULTY (${stats.config.symbol})`}
                   count={`${formatNumber(stats.network.difficulty.toString(), ' ')}`}
                   percentage={{
                     color: 'success',
